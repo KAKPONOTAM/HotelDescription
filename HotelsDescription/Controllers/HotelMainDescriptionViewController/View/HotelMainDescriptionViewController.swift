@@ -19,6 +19,17 @@ final class HotelMainDescriptionViewController: UIViewController {
         return tableView
     }()
     
+    private let selectRoomButton: UIButton = {
+        let button = UIButton()
+        button.backgroundColor = .blue
+        button.layer.cornerRadius = HotelMainDescriptionViewConstants.selectRoomButtonCornerRadius
+        button.titleLabel?.font = .systemFont(ofSize: HotelMainDescriptionViewConstants.selectRoomButtonLabelFontSize)
+        button.setTitleColor(.white, for: .normal)
+        button.setTitle(ModuleTitles.retrieveTitle(for: .selectRoom), for: .normal)
+        
+        return button
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -32,12 +43,20 @@ final class HotelMainDescriptionViewController: UIViewController {
 extension HotelMainDescriptionViewController {
     private func addSubview() {
         view.addSubview(hotelTableView)
+        view.addSubview(selectRoomButton)
     }
     
     private func setupConstraints() {
         hotelTableView.snp.makeConstraints {
-            $0.top.bottom.equalToSuperview()
-            $0.leading.trailing.equalToSuperview().inset(HotelMainDescriptionViewConstants.hotelTableViewSideInset)
+            $0.top.equalToSuperview()
+            $0.bottom.equalTo(selectRoomButton.snp.top).offset(-HotelMainDescriptionViewConstants.defaultBottomOffset)
+            $0.leading.trailing.equalToSuperview().inset(HotelMainDescriptionViewConstants.defaultInset)
+        }
+        
+        selectRoomButton.snp.makeConstraints {
+            $0.leading.trailing.equalToSuperview().inset(HotelMainDescriptionViewConstants.defaultInset)
+            $0.bottom.equalToSuperview().inset(HotelMainDescriptionViewConstants.defaultBottomOffset)
+            $0.height.equalTo(HotelMainDescriptionViewConstants.heightForSelectRoomButton)
         }
     }
 }

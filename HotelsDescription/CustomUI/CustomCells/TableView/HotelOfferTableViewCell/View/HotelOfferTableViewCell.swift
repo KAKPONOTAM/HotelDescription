@@ -104,6 +104,8 @@ extension HotelOfferTableViewCell {
             $0.leading.equalTo(titleLabel)
             $0.height.equalTo(1)
             $0.bottom.trailing.equalToSuperview()
+            $0.bottom.equalToSuperview()
+            $0.trailing.equalTo(vectorImageView)
         }
     }
 }
