@@ -2,7 +2,7 @@ import UIKit
 import SnapKit
 
 final class HotelImagesTableViewCell: UITableViewCell {
-    private var hotelImages: [UIImage?] = .emptyCollection
+    private var collectionViewCellSelection: CollectionViewCellSelection = .hotelImages(images: .emptyCollection)
     
     private lazy var hotelImagesCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -15,6 +15,7 @@ final class HotelImagesTableViewCell: UITableViewCell {
         collectionView.contentInsetAdjustmentBehavior = .scrollableAxes
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.register(HotelImagesCollectionViewCell.self, forCellWithReuseIdentifier: HotelImagesCollectionViewCell.reuseIdentifier)
+        collectionView.register(HotelPeculiaritiesCollectionViewCell.self, forCellWithReuseIdentifier: HotelPeculiaritiesCollectionViewCell.reuseIdentifier)
         
         return collectionView
     }()
@@ -35,16 +36,28 @@ final class HotelImagesTableViewCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         addSubview()
         setupConstraints()
+        
+        selectionStyle = .none
     }
     
     required init?(coder: NSCoder) {
         return nil
     }
     
-    func set(images: [UIImage?]) {
-        self.hotelImages = images
-        self.pageControl.numberOfPages = images.count
+    func set(_ collectionViewCellSelection: CollectionViewCellSelection) {
+        switch collectionViewCellSelection {
+        case .hotelImages(let images):
+            self.pageControl.numberOfPages = images.count
+            
+        case .hotelPeculiarities(_):
+            let layout = LeftPaddingFlowLayout()
+            layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
+            layout.scrollDirection = .vertical
+            
+            self.hotelImagesCollectionView.collectionViewLayout = layout
+        }
         
+        self.collectionViewCellSelection = collectionViewCellSelection
         hotelImagesCollectionView.reloadData()
     }
 }
@@ -71,20 +84,42 @@ extension HotelImagesTableViewCell {
 
 extension HotelImagesTableViewCell: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return hotelImages.count
+        switch collectionViewCellSelection {
+        case .hotelImages(images: let images):
+            return images.count
+            
+        case .hotelPeculiarities(peculiarities: let peculiarities):
+            return peculiarities.count
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HotelImagesCollectionViewCell.reuseIdentifier, for: indexPath) as? HotelImagesCollectionViewCell else { return UICollectionViewCell() }
-        let hotelImage = hotelImages[indexPath.item]
-        
-        cell.configure(image: hotelImage)
-        
-        return cell
+        switch collectionViewCellSelection {
+        case .hotelImages(images: let images):
+            let hotelImage = images[indexPath.item]
+            cell.configure(image: hotelImage)
+            
+            return cell
+            
+        case .hotelPeculiarities(peculiarities: let peculiarities):
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HotelPeculiaritiesCollectionViewCell.reuseIdentifier, for: indexPath) as? HotelPeculiaritiesCollectionViewCell else { return UICollectionViewCell() }
+            let peculiarity = peculiarities[indexPath.item]
+            
+            cell.configure(title: peculiarity)
+            
+            return cell
+            
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: collectionView.frame.width, height: collectionView.frame.height)
+        switch collectionViewCellSelection {
+        case .hotelImages(_):
+            return CGSize(width: collectionView.frame.width, height: collectionView.frame.height)
+            
+        default: return CGSize()
+        }
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {

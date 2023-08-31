@@ -16,10 +16,12 @@ struct ModuleBuilder {
     
     static func assemblyHotelMainDescriptionViewController(router: MainRouterProtocol, hotelDescriptionModel: HotelDescriptionModel) -> UIViewController {
         let hotelMainDescriptionViewController = HotelMainDescriptionViewController()
+        let viewModel = HotelMainDescriptionViewModelImplementation()
         let presenter = HotelMainDescriptionPresenterImplementation(
             router: router,
             viewController: hotelMainDescriptionViewController,
-            hotelMainDescriptionModel: hotelDescriptionModel)
+            hotelMainDescriptionModel: hotelDescriptionModel,
+            viewModel: viewModel)
         
         let navigationController = UINavigationController(rootViewController: hotelMainDescriptionViewController)
         

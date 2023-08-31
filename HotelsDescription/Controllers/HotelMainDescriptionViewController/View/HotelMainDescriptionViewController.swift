@@ -10,21 +10,22 @@ final class HotelMainDescriptionViewController: UIViewController {
         tableView.delegate = self
         tableView.register(HotelImagesTableViewCell.self, forCellReuseIdentifier: HotelImagesTableViewCell.reuseIdentifier)
         tableView.register(HotelRatingTableViewCell.self, forCellReuseIdentifier: HotelRatingTableViewCell.reuseIdentifier)
-        tableView.register(HotelAddressAndPriceTableViewCell.self, forCellReuseIdentifier: HotelAddressAndPriceTableViewCell.reuseIdentifier)
+        tableView.register(HotelDescriptionTableViewCell.self, forCellReuseIdentifier: HotelDescriptionTableViewCell.reuseIdentifier)
+        tableView.register(HotelOfferTableViewCell.self, forCellReuseIdentifier: HotelOfferTableViewCell.reuseIdentifier)
         tableView.backgroundColor = .white
         tableView.separatorStyle = .none
+        tableView.showsVerticalScrollIndicator = false
         
         return tableView
     }()
-
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
         addSubview()
         setupConstraints()
         
-        title = "Отель"
+        title = ModuleTitles.retrieveTitle(for: .hotel)
     }
 }
 
@@ -51,58 +52,67 @@ extension HotelMainDescriptionViewController: PresenterConfigurationProtocol {
 
 extension HotelMainDescriptionViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard let presenter else { return .zero }
-        let section = presenter.scrollConfigurationTuple.sections[section]
-        
-        switch section {
-        case .hotelOffers:
-            return presenter.scrollConfigurationTuple.rows.count
-            
-        default: return view.singleRow
-        }
+        return view.singleRow
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return presenter?.scrollConfigurationTuple.sections.count ?? .zero
+        return presenter?.sections.count ?? .zero
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let presenter else { return UITableViewCell() }
-        let section = presenter.scrollConfigurationTuple.sections[indexPath.section]
+        let section = presenter.sections[indexPath.section]
+        let attributedString = presenter.configurePrice(for: section)
         
         switch section {
         case .hotelImages:
             guard let hotelImagesCell = tableView.dequeueReusableCell(withIdentifier: HotelImagesTableViewCell.reuseIdentifier, for: indexPath) as? HotelImagesTableViewCell else { return UITableViewCell() }
             
-            hotelImagesCell.set(images: presenter.hotelMainDescriptionModel.hotelImages)
+            hotelImagesCell.set(.hotelImages(images: presenter.hotelMainDescriptionModel.hotelImages))
             
             return hotelImagesCell
             
         case .hotelGrade:
             guard let hotelGradeCell = tableView.dequeueReusableCell(withIdentifier: HotelRatingTableViewCell.reuseIdentifier, for: indexPath) as? HotelRatingTableViewCell else { return UITableViewCell() }
-            let ratingName = presenter.hotelMainDescriptionModel.decodableHotelMainDescriptionModel.rating_name
-            let grade = "\(presenter.hotelMainDescriptionModel.decodableHotelMainDescriptionModel.rating)" + " " + ratingName
             
-            hotelGradeCell.configure(grade: grade)
+            hotelGradeCell.configure(grade: attributedString)
             
             return hotelGradeCell
             
         case .hotelName, .hotelAddress, .tourPrice:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: HotelAddressAndPriceTableViewCell.reuseIdentifier, for: indexPath) as? HotelAddressAndPriceTableViewCell else { return UITableViewCell() }
-            let attributedString = presenter.configurePrice(for: section)
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: HotelDescriptionTableViewCell.reuseIdentifier, for: indexPath) as? HotelDescriptionTableViewCell else { return UITableViewCell() }
             
             cell.configure(title: attributedString)
             
             return cell
             
-        default:
-            return UITableViewCell()
+        case .peculiarities:
+            guard let hotelPeculiaritiesCell = tableView.dequeueReusableCell(withIdentifier: HotelImagesTableViewCell.reuseIdentifier, for: indexPath) as? HotelImagesTableViewCell else { return UITableViewCell() }
+            
+            hotelPeculiaritiesCell.set(.hotelPeculiarities(peculiarities: presenter.hotelMainDescriptionModel.decodableHotelMainDescriptionModel.about_the_hotel.peculiarities))
+            
+            return hotelPeculiaritiesCell
+            
+        case .hotelDescription:
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: HotelDescriptionTableViewCell.reuseIdentifier, for: indexPath) as? HotelDescriptionTableViewCell else { return UITableViewCell() }
+            
+            cell.configure(title: attributedString)
+            
+            return cell
+            
+        case .facilities, .included, .unIncluded:
+            guard let hotelOfferCell = tableView.dequeueReusableCell(withIdentifier: HotelOfferTableViewCell.reuseIdentifier, for: indexPath) as? HotelOfferTableViewCell else { return UITableViewCell() }
+            
+            hotelOfferCell.configure(with: section)
+            
+            return hotelOfferCell
+            
         }
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         guard let presenter else { return .zero }
-        let section = presenter.scrollConfigurationTuple.sections[indexPath.section]
+        let section = presenter.sections[indexPath.section]
         
         switch section {
         case .hotelImages:
@@ -111,20 +121,34 @@ extension HotelMainDescriptionViewController: UITableViewDataSource, UITableView
         case .hotelGrade:
             return HotelMainDescriptionViewConstants.heightForHotelGradeRow
             
-        case .hotelName, .hotelAddress, .tourPrice:
+        case .hotelName, .hotelAddress, .tourPrice, .hotelDescription:
             return UITableView.automaticDimension
             
-        default: return .zero
+        case .peculiarities:
+            return HotelMainDescriptionViewConstants.heightForPeculiaritiesRow
+            
+        case .facilities, .included, .unIncluded:
+            return HotelMainDescriptionViewConstants.heightForHotelOfferRows
         }
     }
     
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-       return nil
+        guard let presenter else { return nil }
+        let section = presenter.sections[section]
+        let label = UILabel()
+        label.textColor = .black
+        label.font = .boldSystemFont(ofSize: HotelMainDescriptionViewConstants.headerLabelFontSize)
+        label.text = ModuleTitles.retrieveTitle(for: .aboutHotel)
+        
+        return section == .peculiarities ? label : .none
     }
-
+    
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return .zero
+        guard let presenter else { return .zero }
+        let section = presenter.sections[section]
+        
+        return section == .peculiarities ? HotelMainDescriptionViewConstants.heightForHeaderInSection : .zero
     }
 }
 
