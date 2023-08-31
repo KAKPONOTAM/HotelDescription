@@ -7,7 +7,7 @@ final class HotelImagesTableViewCell: UITableViewCell {
     private lazy var hotelImagesCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
-        layout.minimumLineSpacing = HotelImagesTableViewCellConstants.hotelImagesCollectionViewMinimumLineSpacing
+        layout.minimumLineSpacing = .zero
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.isPagingEnabled = true
         collectionView.dataSource = self
@@ -22,7 +22,8 @@ final class HotelImagesTableViewCell: UITableViewCell {
     private let pageControl: UIPageControl = {
         let pageControl = UIPageControl()
         pageControl.currentPage = .zero
-        pageControl.pageIndicatorTintColor = .black
+        pageControl.pageIndicatorTintColor = .systemGray
+        pageControl.currentPageIndicatorTintColor = .black
         pageControl.backgroundColor = .white
         pageControl.clipsToBounds = true
         pageControl.layer.cornerRadius = HotelImagesTableViewCellConstants.pageControlCornerRadius
@@ -83,7 +84,7 @@ extension HotelImagesTableViewCell: UICollectionViewDataSource, UICollectionView
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: collectionView.frame.width - HotelImagesTableViewCellConstants.hotelImagesCollectionViewMinimumLineSpacing, height: collectionView.frame.height)
+        return CGSize(width: collectionView.frame.width, height: collectionView.frame.height)
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {

@@ -10,6 +10,7 @@ final class HotelMainDescriptionViewController: UIViewController {
         tableView.delegate = self
         tableView.register(HotelImagesTableViewCell.self, forCellReuseIdentifier: HotelImagesTableViewCell.reuseIdentifier)
         tableView.register(HotelRatingTableViewCell.self, forCellReuseIdentifier: HotelRatingTableViewCell.reuseIdentifier)
+        tableView.register(HotelAddressAndPriceTableViewCell.self, forCellReuseIdentifier: HotelAddressAndPriceTableViewCell.reuseIdentifier)
         tableView.backgroundColor = .white
         tableView.separatorStyle = .none
         
@@ -54,23 +55,10 @@ extension HotelMainDescriptionViewController: UITableViewDataSource, UITableView
         let section = presenter.scrollConfigurationTuple.sections[section]
         
         switch section {
-        case .hotelImages:
-            return view.singleRow
-            
-        case .hotelGrade:
-            return view.singleRow
-
-        case .hotelAddressAndPrice:
-            return view.singleRow
-
-        case .peculiarities:
-            return view.singleRow
-
-        case .hotelDescription:
-            return view.singleRow
-
         case .hotelOffers:
             return presenter.scrollConfigurationTuple.rows.count
+            
+        default: return view.singleRow
         }
     }
     
@@ -99,6 +87,14 @@ extension HotelMainDescriptionViewController: UITableViewDataSource, UITableView
             
             return hotelGradeCell
             
+        case .hotelName, .hotelAddress, .tourPrice:
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: HotelAddressAndPriceTableViewCell.reuseIdentifier, for: indexPath) as? HotelAddressAndPriceTableViewCell else { return UITableViewCell() }
+            let attributedString = presenter.configurePrice(for: section)
+            
+            cell.configure(title: attributedString)
+            
+            return cell
+            
         default:
             return UITableViewCell()
         }
@@ -115,24 +111,18 @@ extension HotelMainDescriptionViewController: UITableViewDataSource, UITableView
         case .hotelGrade:
             return HotelMainDescriptionViewConstants.heightForHotelGradeRow
             
+        case .hotelName, .hotelAddress, .tourPrice:
+            return UITableView.automaticDimension
+            
         default: return .zero
         }
     }
     
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        guard let presenter else { return nil }
-        let section = presenter.scrollConfigurationTuple.sections[section]
-        let view = UIView()
-        view.backgroundColor = .clear
-        
-        switch section {
-        case .hotelGrade:
-            return view
-            
-        default: return nil
-        }
-    }
     
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+       return nil
+    }
+
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return .zero
     }

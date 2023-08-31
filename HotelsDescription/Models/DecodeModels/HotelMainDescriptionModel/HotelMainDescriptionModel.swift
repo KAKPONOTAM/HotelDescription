@@ -2,7 +2,7 @@ import Foundation
 
 struct DecodableHotelMainDescriptionModel: Decodable {
     let name: String
-    let address: String?
+    let adress: String
     let minimal_price: Int
     let price_for_it: String
     let rating: Int
