@@ -1,10 +1,10 @@
 import UIKit
 
-protocol AppBuilderProtocol {
-    mutating func createMainModule()
+protocol AppBuilderProtocol: AnyObject {
+     func createMainModule()
 }
 
-struct AppBuilderImplementation: AppBuilderProtocol {
+final class AppBuilderImplementation: AppBuilderProtocol {
     private var window: UIWindow?
     private let router = MainRouterImplementation()
     
@@ -12,8 +12,7 @@ struct AppBuilderImplementation: AppBuilderProtocol {
         self.window = window
     }
     
-    mutating func createMainModule() {
-        window = UIWindow(frame: UIScreen.main.bounds)
+     func createMainModule() {
         window?.rootViewController = router.start()
         window?.makeKeyAndVisible()
     }

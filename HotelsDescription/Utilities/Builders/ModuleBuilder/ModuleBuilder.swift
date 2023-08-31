@@ -1,12 +1,31 @@
 import UIKit
 
 struct ModuleBuilder {
-    static func assemblyLaunchViewController() -> UIViewController? {
+    static func assemblyLaunchViewController(router: HandlingRouter) -> UIViewController {
         let launchViewController = LaunchViewController()
-        let presenter = LaunchViewPresenterImplementation()
+        let networkManager = NetworkManagerImplementation()
+        let presenter = LaunchViewPresenterImplementation(
+            viewController: launchViewController,
+            networkManager: networkManager,
+            router: router)
         
         launchViewController.set(presenter: presenter)
         
         return launchViewController
+    }
+    
+    static func assemblyHotelMainDescriptionViewController(router: MainRouterProtocol, hotelDescriptionModel: HotelDescriptionModel) -> UIViewController {
+        let hotelMainDescriptionViewController = HotelMainDescriptionViewController()
+        let presenter = HotelMainDescriptionPresenterImplementation(
+            router: router,
+            viewController: hotelMainDescriptionViewController,
+            hotelMainDescriptionModel: hotelDescriptionModel)
+        
+        let navigationController = UINavigationController(rootViewController: hotelMainDescriptionViewController)
+        
+        hotelMainDescriptionViewController.set(presenter: presenter)
+        
+        return navigationController
+        
     }
 }

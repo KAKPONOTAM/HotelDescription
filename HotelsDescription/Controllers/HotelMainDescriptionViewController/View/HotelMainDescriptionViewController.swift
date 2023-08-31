@@ -1,6 +1,7 @@
 import UIKit
 
 final class HotelMainDescriptionViewController: UIViewController {
+    private var presenter: HotelMainDescriptionPresenterProtocol?
     
     private lazy var hotelTableView: UITableView = {
         let tableView = UITableView()
@@ -14,6 +15,15 @@ final class HotelMainDescriptionViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .red
+    }
+}
+
+extension HotelMainDescriptionViewController: HotelMainDescriptionViewProtocol {}
+
+extension HotelMainDescriptionViewController: PresenterConfigurationProtocol {
+    func set(presenter: HotelMainDescriptionPresenterProtocol) {
+        self.presenter = presenter
     }
 }
 
@@ -26,3 +36,4 @@ extension HotelMainDescriptionViewController: UITableViewDataSource, UITableView
         return UITableViewCell()
     }
 }
+
