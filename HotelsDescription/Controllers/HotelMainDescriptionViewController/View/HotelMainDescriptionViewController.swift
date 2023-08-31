@@ -1,30 +1,23 @@
 import UIKit
-import SnapKit
 
-final class LaunchViewController: UIViewController {
-    private var presenter: LaunchViewPresenterProtocol?
+final class HotelMainDescriptionViewController: UIViewController {
     
     private lazy var hotelTableView: UITableView = {
         let tableView = UITableView()
         tableView.dataSource = self
         tableView.delegate = self
+        tableView.register(HotelImagesTableViewCell.self, forCellReuseIdentifier: HotelImagesTableViewCell.reuseIdentifier)
         
         return tableView
     }()
 
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
     }
 }
 
-extension LaunchViewController: PresenterConfigurationProtocol {
-    func set(presenter: LaunchViewPresenterImplementation) {
-        self.presenter = presenter
-    }
-}
-
-extension LaunchViewController: UITableViewDataSource, UITableViewDelegate {
+extension HotelMainDescriptionViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return .zero
     }
