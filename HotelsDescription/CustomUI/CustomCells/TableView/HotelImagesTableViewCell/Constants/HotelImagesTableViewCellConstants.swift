@@ -6,5 +6,7 @@ extension HotelImagesTableViewCell {
         static let pageControlBottomInset: CGFloat = 8
         
         static let hotelImagesCollectionViewMinimumLineSpacing: CGFloat = 10
+        
+        static let heightForCell: CGFloat = 30
     }
 }

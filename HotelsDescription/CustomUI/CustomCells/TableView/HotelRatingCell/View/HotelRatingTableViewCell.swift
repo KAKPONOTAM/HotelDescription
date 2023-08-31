@@ -24,13 +24,15 @@ final class HotelRatingTableViewCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         addSubview()
         setupConstraints()
+        
+        selectionStyle = .none
     }
     
     required init?(coder: NSCoder) {
         return nil
     }
     
-    func configure(grade: String) {
+    func configure(grade: NSMutableAttributedString?) {
         let imageAttachment = NSTextAttachment()
         
         imageAttachment.image = ModuleImages.retrieveImage(with: .starImage)
@@ -38,7 +40,7 @@ final class HotelRatingTableViewCell: UITableViewCell {
         
         let completeText = NSMutableAttributedString(string: .emptyString)
         let attachmentString = NSAttributedString(attachment: imageAttachment)
-        let textAfterIcon = NSAttributedString(string: " \(grade)")
+        let textAfterIcon = NSAttributedString(string: " \(grade?.string ?? .emptyString)")
         
         completeText.append(attachmentString)
         completeText.append(textAfterIcon)

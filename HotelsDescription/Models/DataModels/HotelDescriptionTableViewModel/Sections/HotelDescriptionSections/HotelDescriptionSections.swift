@@ -1,4 +1,4 @@
-import Foundation
+import UIKit
 
 enum HotelDescriptionSections: CaseIterable {
     case hotelImages
@@ -8,5 +8,5 @@ enum HotelDescriptionSections: CaseIterable {
     case tourPrice
     case peculiarities
     case hotelDescription
-    case hotelOffers
+    case hotelOffer
 }

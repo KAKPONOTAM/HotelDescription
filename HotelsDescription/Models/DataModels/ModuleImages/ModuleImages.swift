@@ -3,6 +3,7 @@ import UIKit
 enum ModuleImages {
     case launchImage
     case starImage
+    case vectorImage
     
     private var image: UIImage? {
         switch self {
@@ -11,6 +12,9 @@ enum ModuleImages {
             
         case .starImage:
             return UIImage(named: "starImage")
+            
+        case .vectorImage:
+            return UIImage(named: "vectorImage")
         }
     }
     
