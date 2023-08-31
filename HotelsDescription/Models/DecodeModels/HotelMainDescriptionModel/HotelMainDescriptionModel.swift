@@ -9,7 +9,6 @@ struct DecodableHotelMainDescriptionModel: Decodable {
     let rating_name: String
     let image_urls: [String]
     let about_the_hotel: DecodableHotelDescription
-    let peculiarities: [String]?
 }
 
 struct DecodableHotelDescription: Decodable {
