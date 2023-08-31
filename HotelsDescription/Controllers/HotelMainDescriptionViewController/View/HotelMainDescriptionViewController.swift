@@ -9,6 +9,7 @@ final class HotelMainDescriptionViewController: UIViewController {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.register(HotelImagesTableViewCell.self, forCellReuseIdentifier: HotelImagesTableViewCell.reuseIdentifier)
+        tableView.register(HotelRatingTableViewCell.self, forCellReuseIdentifier: HotelRatingTableViewCell.reuseIdentifier)
         tableView.backgroundColor = .white
         tableView.separatorStyle = .none
         
@@ -21,6 +22,8 @@ final class HotelMainDescriptionViewController: UIViewController {
         view.backgroundColor = .white
         addSubview()
         setupConstraints()
+        
+        title = "Отель"
     }
 }
 
@@ -52,20 +55,20 @@ extension HotelMainDescriptionViewController: UITableViewDataSource, UITableView
         
         switch section {
         case .hotelImages:
-            return presenter.hotelMainDescriptionModel.hotelImages.count
-            
-        case .hotelAddress:
             return view.singleRow
             
-        case .tourPrice:
+        case .hotelGrade:
             return view.singleRow
-            
+
+        case .hotelAddressAndPrice:
+            return view.singleRow
+
         case .peculiarities:
             return view.singleRow
-            
+
         case .hotelDescription:
             return view.singleRow
-            
+
         case .hotelOffers:
             return presenter.scrollConfigurationTuple.rows.count
         }
@@ -76,7 +79,62 @@ extension HotelMainDescriptionViewController: UITableViewDataSource, UITableView
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return UITableViewCell()
+        guard let presenter else { return UITableViewCell() }
+        let section = presenter.scrollConfigurationTuple.sections[indexPath.section]
+        
+        switch section {
+        case .hotelImages:
+            guard let hotelImagesCell = tableView.dequeueReusableCell(withIdentifier: HotelImagesTableViewCell.reuseIdentifier, for: indexPath) as? HotelImagesTableViewCell else { return UITableViewCell() }
+            
+            hotelImagesCell.set(images: presenter.hotelMainDescriptionModel.hotelImages)
+            
+            return hotelImagesCell
+            
+        case .hotelGrade:
+            guard let hotelGradeCell = tableView.dequeueReusableCell(withIdentifier: HotelRatingTableViewCell.reuseIdentifier, for: indexPath) as? HotelRatingTableViewCell else { return UITableViewCell() }
+            let ratingName = presenter.hotelMainDescriptionModel.decodableHotelMainDescriptionModel.rating_name
+            let grade = "\(presenter.hotelMainDescriptionModel.decodableHotelMainDescriptionModel.rating)" + " " + ratingName
+            
+            hotelGradeCell.configure(grade: grade)
+            
+            return hotelGradeCell
+            
+        default:
+            return UITableViewCell()
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        guard let presenter else { return .zero }
+        let section = presenter.scrollConfigurationTuple.sections[indexPath.section]
+        
+        switch section {
+        case .hotelImages:
+            return HotelMainDescriptionViewConstants.heightForHotelImageRow
+            
+        case .hotelGrade:
+            return HotelMainDescriptionViewConstants.heightForHotelGradeRow
+            
+        default: return .zero
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        guard let presenter else { return nil }
+        let section = presenter.scrollConfigurationTuple.sections[section]
+        let view = UIView()
+        view.backgroundColor = .clear
+        
+        switch section {
+        case .hotelGrade:
+            return view
+            
+        default: return nil
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return .zero
     }
 }
 

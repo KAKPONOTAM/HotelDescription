@@ -6,10 +6,10 @@ struct DecodableHotelMainDescriptionModel: Decodable {
     let minimal_price: Int
     let price_for_it: String
     let rating: Int
-    let ratingName: String?
+    let rating_name: String
     let image_urls: [String]
     let about_the_hotel: DecodableHotelDescription
-    let peculiarities: [String]
+    let peculiarities: [String]?
 }
 
 struct DecodableHotelDescription: Decodable {

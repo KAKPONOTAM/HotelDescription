@@ -2,8 +2,8 @@ import Foundation
 
 enum HotelDescriptionSections: CaseIterable {
     case hotelImages
-    case hotelAddress
-    case tourPrice
+    case hotelGrade
+    case hotelAddressAndPrice
     case peculiarities
     case hotelDescription
     case hotelOffers

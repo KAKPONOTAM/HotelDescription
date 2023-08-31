@@ -4,9 +4,7 @@ protocol HotelMainDescriptionPresenterProtocol: AnyObject {
     var scrollConfigurationTuple: ScrollConfigurationTuple<HotelDescriptionSections.AllCases, HotelOfferRows.AllCases> { get } 
 }
 
-protocol HotelMainDescriptionViewProtocol: AnyObject {
-    
-}
+protocol HotelMainDescriptionViewProtocol: AnyObject {}
 
 final class HotelMainDescriptionPresenterImplementation: HotelMainDescriptionPresenterProtocol {
     private let router: MainRouterProtocol
