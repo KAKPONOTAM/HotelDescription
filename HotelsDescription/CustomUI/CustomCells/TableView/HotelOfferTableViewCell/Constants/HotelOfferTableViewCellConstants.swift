@@ -3,7 +3,7 @@ import UIKit
 extension HotelOfferTableViewCell {
     struct HotelOfferTableViewCellConstants {
         static let titleLabelFontSize: CGFloat = 16
-        static let titleLabelLeadingOffset: CGFloat = 12
+        static let titleLabelDefaultOffset: CGFloat = 12
         
         static let subTitleLabelFontSize: CGFloat = 14
         

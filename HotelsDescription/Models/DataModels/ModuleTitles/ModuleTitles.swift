@@ -15,7 +15,6 @@ enum ModuleTitles {
             
         case .selectRoom:
             return "К выбору номера"
-
         }
     }
     

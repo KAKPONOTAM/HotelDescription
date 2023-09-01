@@ -71,7 +71,15 @@ extension HotelMainDescriptionViewController: PresenterConfigurationProtocol {
 
 extension HotelMainDescriptionViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return view.singleRow
+        guard let presenter else { return .zero }
+        let section = presenter.sections[section]
+        
+        switch section {
+        case .hotelOffers:
+            return presenter.hotelOffers.count
+            
+        default: return view.singleRow
+        }
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -119,10 +127,11 @@ extension HotelMainDescriptionViewController: UITableViewDataSource, UITableView
             
             return cell
             
-        case .facilities, .included, .unIncluded:
+        case .hotelOffers:
             guard let hotelOfferCell = tableView.dequeueReusableCell(withIdentifier: HotelOfferTableViewCell.reuseIdentifier, for: indexPath) as? HotelOfferTableViewCell else { return UITableViewCell() }
+            let hotelOffer = presenter.hotelOffers[indexPath.row]
             
-            hotelOfferCell.configure(with: section)
+            hotelOfferCell.configure(with: hotelOffer)
             
             return hotelOfferCell
             
@@ -146,7 +155,7 @@ extension HotelMainDescriptionViewController: UITableViewDataSource, UITableView
         case .peculiarities:
             return HotelMainDescriptionViewConstants.heightForPeculiaritiesRow
             
-        case .facilities, .included, .unIncluded:
+        case .hotelOffers:
             return HotelMainDescriptionViewConstants.heightForHotelOfferRows
         }
     }

@@ -2,6 +2,12 @@ import UIKit
 import SnapKit
 
 final class HotelOfferTableViewCell: UITableViewCell {
+    private let containerView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .systemGray6
+        return view
+    }()
+    
     private let titleImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
@@ -55,12 +61,14 @@ final class HotelOfferTableViewCell: UITableViewCell {
         return nil
     }
     
-    func configure(with hotelDescriptionSections: HotelDescriptionSections) {
-        titleImageView.image = hotelDescriptionSections.hotelOfferTitleImage
-        titleLabel.text = hotelDescriptionSections.hotelOfferTitle
-        subTitleLabel.text = hotelDescriptionSections.hotelOfferSubTitle
+    func configure(with hotelOffer: HotelOffers) {
+        titleImageView.image = hotelOffer.hotelOfferTitleImage
+        titleLabel.text = hotelOffer.hotelOfferTitle
+        subTitleLabel.text = hotelOffer.hotelOfferSubTitle
         
-        switch hotelDescriptionSections {
+        configureContainerView(depends: hotelOffer)
+        
+        switch hotelOffer {
         case .unIncluded:
             separatorView.removeFromSuperview()
             
@@ -71,14 +79,20 @@ final class HotelOfferTableViewCell: UITableViewCell {
 
 extension HotelOfferTableViewCell {
     private func addSubview() {
-        contentView.addSubview(titleImageView)
-        contentView.addSubview(titleLabel)
-        contentView.addSubview(vectorImageView)
-        contentView.addSubview(subTitleLabel)
-        contentView.addSubview(separatorView)
+        containerView.addSubview(titleImageView)
+        containerView.addSubview(titleLabel)
+        containerView.addSubview(vectorImageView)
+        containerView.addSubview(subTitleLabel)
+        containerView.addSubview(separatorView)
+        
+        contentView.addSubview(containerView)
     }
     
     private func setupConstraints() {
+        containerView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
+        
         titleImageView.snp.makeConstraints {
             $0.size.equalTo(HotelOfferTableViewCellConstants.defaultSize)
             $0.leading.equalToSuperview().inset(HotelOfferTableViewCellConstants.defaultSideInset)
@@ -86,8 +100,9 @@ extension HotelOfferTableViewCell {
         }
         
         titleLabel.snp.makeConstraints {
-            $0.top.equalToSuperview()
-            $0.leading.equalTo(titleImageView.snp.trailing).offset(HotelOfferTableViewCellConstants.titleLabelLeadingOffset)
+            $0.leading.equalTo(titleImageView.snp.trailing).offset(HotelOfferTableViewCellConstants.defaultSideInset)
+            $0.top.equalToSuperview().inset(HotelOfferTableViewCellConstants.titleLabelDefaultOffset)
+            $0.leading.equalTo(titleImageView.snp.trailing).offset(HotelOfferTableViewCellConstants.titleLabelDefaultOffset)
         }
         
         subTitleLabel.snp.makeConstraints {
@@ -103,9 +118,22 @@ extension HotelOfferTableViewCell {
         separatorView.snp.makeConstraints {
             $0.leading.equalTo(titleLabel)
             $0.height.equalTo(1)
-            $0.bottom.trailing.equalToSuperview()
             $0.bottom.equalToSuperview()
             $0.trailing.equalTo(vectorImageView)
+        }
+    }
+    
+    private func configureContainerView(depends hotelOffer: HotelOffers) {
+        switch hotelOffer {
+        case .facilities:
+            containerView.layer.cornerRadius = 15
+            containerView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+            
+        case .unIncluded:
+            containerView.layer.cornerRadius = 15
+            containerView.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+            
+        default: break
         }
     }
 }

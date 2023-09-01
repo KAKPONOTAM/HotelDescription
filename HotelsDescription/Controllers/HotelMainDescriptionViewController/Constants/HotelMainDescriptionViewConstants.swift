@@ -8,7 +8,7 @@ extension HotelMainDescriptionViewController {
         static let heightForHotelImageRow: CGFloat = 300
         static let heightForHotelGradeRow: CGFloat = 30
         static let heightForPeculiaritiesRow: CGFloat = 100
-        static let heightForHotelOfferRows: CGFloat = 40
+        static let heightForHotelOfferRows: CGFloat = 60
         
         static let headerLabelFontSize: CGFloat = 22
         

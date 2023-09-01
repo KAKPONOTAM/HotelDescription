@@ -3,6 +3,7 @@ import UIKit
 protocol HotelMainDescriptionPresenterProtocol: AnyObject {
     var hotelMainDescriptionModel: HotelDescriptionModel { get }
     var sections: [HotelDescriptionSections] { get }
+    var hotelOffers: [HotelOffers] { get }
     
     func configurePrice(for hotelDescriptionSections: HotelDescriptionSections) -> NSMutableAttributedString?
 }
@@ -18,6 +19,10 @@ final class HotelMainDescriptionPresenterImplementation: HotelMainDescriptionPre
     
     var sections: [HotelDescriptionSections] {
         return HotelDescriptionSections.allCases
+    }
+    
+    var hotelOffers: [HotelOffers] {
+        return HotelOffers.allCases
     }
     
     init(router: MainRouterProtocol, viewController: HotelMainDescriptionViewProtocol?, hotelMainDescriptionModel: HotelDescriptionModel, viewModel: HotelMainDescriptionViewModelProtocol) {
